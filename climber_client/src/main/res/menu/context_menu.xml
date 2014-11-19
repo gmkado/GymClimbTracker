@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item   android:id="@+id/addRemoveProjects"
+        android:title="@string/addProject"/>
+    <item   android:id="@+id/workinIt"
+        android:title="@string/workinIt"/>
+    <item   android:id="@+id/addRemoveSent"
+        android:title="@string/sentIt"/>
+</menu>

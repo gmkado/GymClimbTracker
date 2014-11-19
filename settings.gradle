@@ -1,0 +1,3 @@
+include ':gym_server', ':climb_contract'
+include ':gym_client'
+include ':climber_client'

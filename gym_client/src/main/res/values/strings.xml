@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GymTracker</string>
+    <string name="gym_name">Planet Granite Sunnyvale</string>
+    <string name="action_settings">Settings</string>
+    <string name="addClimbButtonText">Add Climb</string>
+    <string name="emptyList">No climbs set</string>
+    <string name="edit">Edit</string>
+    <string name="plan_removal">Set removal date</string>
+    <string name="remove">Remove</string>
+    <string name="delete">Delete</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

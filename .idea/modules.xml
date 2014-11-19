@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/GymClimbTracker.iml" filepath="$PROJECT_DIR$/GymClimbTracker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/climb_contract/climb_contract.iml" filepath="$PROJECT_DIR$/climb_contract/climb_contract.iml" />
+      <module fileurl="file://$PROJECT_DIR$/climber_client/climber_client.iml" filepath="$PROJECT_DIR$/climber_client/climber_client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gym_client/gym_client.iml" filepath="$PROJECT_DIR$/gym_client/gym_client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gym_server/gym_server.iml" filepath="$PROJECT_DIR$/gym_server/gym_server.iml" />
+    </modules>
+  </component>
+</project>
+

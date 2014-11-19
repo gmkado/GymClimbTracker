@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name = "PGSV_boulderLoc">
+        <item>Welcome Wall</item>
+        <item>Left Cheek</item>
+        <item>Right Cheek</item>
+        <item>Bouldering Slabs</item>
+        <item>10deg Wall</item>
+        <item>Prow</item>
+        <item>Learning Center</item>
+        <item>The Belly</item>
+        <item>The Wave</item>
+        <item>Corner-Copia</item>
+    </string-array>
+    <string-array name="PGSV_ropeLoc">
+        <item>The Alcove</item>
+        <item>Storage Slabs</item>
+        <item>The Tower</item>
+        <item>The Gallery</item>
+        <item>Trophy</item>
+        <item>Holiday Wall</item>
+        <item>Constant Wall</item>
+        <item>The Crystal</item>
+        <item>Marathon Wall</item>
+        <item>Double Wave</item>
+        <item>Sun Wall</item>
+        <item>Vert Wall</item>
+        <item>Crack Wall</item>
+        <item>Snow Shed</item>
+        <item>Crow\'s Nest</item>
+        <item>Mega Slab</item>
+        <item>Ice Box</item>
+        <item>Yosemite Corner</item>
+    </string-array>
+</resources>
