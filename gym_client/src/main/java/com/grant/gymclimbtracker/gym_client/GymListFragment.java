@@ -58,6 +58,7 @@ public class GymListFragment extends ListFragment implements
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
+        Log.i(TAG, "onCreateContextMenu");
         MenuInflater inflater = getActivity().getMenuInflater();
         inflater.inflate(R.menu.context_menu, menu);
     }
@@ -65,6 +66,7 @@ public class GymListFragment extends ListFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate");
         /*--if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
 
@@ -74,6 +76,7 @@ public class GymListFragment extends ListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_gym_list, container, false);
     }
@@ -81,6 +84,7 @@ public class GymListFragment extends ListFragment implements
     @Override
    public void onAttach(Activity activity) {
         super.onAttach(activity);
+        Log.i(TAG, "onAttach");
         try {
             mListener = (OnGymListFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -94,6 +98,7 @@ public class GymListFragment extends ListFragment implements
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.i(TAG, "onDetach");
         mListener = null;
     }
 
@@ -105,8 +110,12 @@ public class GymListFragment extends ListFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.i(TAG, "onActivityCreated");
+        // content resolver for web db
         resolver = getActivity().getContentResolver();
         getLoaderManager().initLoader(CLIMB_LIST_ID, null, this);
+
+        // now that the activity is created, register list items for context menu
         registerForContextMenu(getListView());
     }
 
@@ -128,17 +137,17 @@ public class GymListFragment extends ListFragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if(getListAdapter()==null) {
-            ClimbCursorAdapter adapter = new ClimbCursorAdapter(getActivity(), cursor, 0);
+            GymCursorAdapter adapter = new GymCursorAdapter(getActivity(), cursor, 0);
             this.setListAdapter(adapter);
         }
          else{
-            ((ClimbCursorAdapter)this.getListAdapter()).swapCursor(cursor);
+            ((GymCursorAdapter)this.getListAdapter()).swapCursor(cursor);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        ((SimpleCursorAdapter)this.getListAdapter()).swapCursor(null);
+        ((GymCursorAdapter)this.getListAdapter()).swapCursor(null);
     }
 
     /**

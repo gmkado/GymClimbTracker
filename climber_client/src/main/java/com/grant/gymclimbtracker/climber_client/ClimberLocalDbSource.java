@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Created by Grant on 10/26/2014.
  */
-public class LocalDbSource {
+public class ClimberLocalDbSource {
     private static final String TAG = "LocalDbSource";
     private SQLiteDatabase database;
     private LocalDbHelper helper;
 
-    public LocalDbSource(Context context) {
+    public ClimberLocalDbSource(Context context) {
         helper = new LocalDbHelper(context);
     }
 
@@ -33,9 +33,9 @@ public class LocalDbSource {
 
     public void addRemoveProject(int _id) {
         // check if already added
-        Cursor cursor = database.query(LocalDbSchema.TABLE_MYCLIMBS,
-                new String[]{LocalDbSchema.COLUMN_PROJECT},
-                LocalDbSchema.COLUMN_ID + "=" + _id,
+        Cursor cursor = database.query(ClimberLocalDbSchema.TABLE_MYCLIMBS,
+                new String[]{ClimberLocalDbSchema.COLUMN_PROJECT},
+                ClimberLocalDbSchema.COLUMN_ID + "=" + _id,
                 null, null, null, null);
         boolean hasItems = cursor.moveToFirst();
         // if not add it with value true
@@ -43,30 +43,30 @@ public class LocalDbSource {
             insertMyClimb(_id, true, 0, false);
         } else {
             // otherwise if it is a project, remove it.  if it isn't, add it
-            boolean addProject = !(cursor.getInt(cursor.getColumnIndex(LocalDbSchema.COLUMN_PROJECT))>0);
+            boolean addProject = !(cursor.getInt(cursor.getColumnIndex(ClimberLocalDbSchema.COLUMN_PROJECT))>0);
 
             ContentValues values = new ContentValues();
-            values.put(LocalDbSchema.COLUMN_PROJECT, addProject);
-            database.update(LocalDbSchema.TABLE_MYCLIMBS, values,
-                    LocalDbSchema.COLUMN_ID + "=" + _id, null);
+            values.put(ClimberLocalDbSchema.COLUMN_PROJECT, addProject);
+            database.update(ClimberLocalDbSchema.TABLE_MYCLIMBS, values,
+                    ClimberLocalDbSchema.COLUMN_ID + "=" + _id, null);
         }
     }
 
     private void insertMyClimb(int _id, boolean project, int attempts, boolean sent) {
         ContentValues values = new ContentValues();
-        values.put(LocalDbSchema.COLUMN_ID, _id);
-        values.put(LocalDbSchema.COLUMN_PROJECT, project);
-        values.put(LocalDbSchema.COLUMN_ATTEMPTS, attempts);
-        values.put(LocalDbSchema.COLUMN_SENT, sent);
+        values.put(ClimberLocalDbSchema.COLUMN_ID, _id);
+        values.put(ClimberLocalDbSchema.COLUMN_PROJECT, project);
+        values.put(ClimberLocalDbSchema.COLUMN_ATTEMPTS, attempts);
+        values.put(ClimberLocalDbSchema.COLUMN_SENT, sent);
 
-        database.insert(LocalDbSchema.TABLE_MYCLIMBS, null, values);
+        database.insert(ClimberLocalDbSchema.TABLE_MYCLIMBS, null, values);
     }
 
     public void incrementAttemptCount(int _id) {
         // check if already added
-        Cursor cursor = database.query(LocalDbSchema.TABLE_MYCLIMBS,
-                LocalDbSchema.ALL_MYCLIMBS_COLUMNS,
-                LocalDbSchema.COLUMN_ID + "=" + _id,
+        Cursor cursor = database.query(ClimberLocalDbSchema.TABLE_MYCLIMBS,
+                ClimberLocalDbSchema.ALL_MYCLIMBS_COLUMNS,
+                ClimberLocalDbSchema.COLUMN_ID + "=" + _id,
                 null, null, null, null);
 
         boolean hasItem = cursor.moveToFirst();
@@ -74,20 +74,20 @@ public class LocalDbSource {
         if (!hasItem) {
             insertMyClimb(_id, false, 1, false);
         }else {
-            int numAttempts = cursor.getInt(cursor.getColumnIndex(LocalDbSchema.COLUMN_ATTEMPTS));
+            int numAttempts = cursor.getInt(cursor.getColumnIndex(ClimberLocalDbSchema.COLUMN_ATTEMPTS));
 
             ContentValues values = new ContentValues();
-            values.put(LocalDbSchema.COLUMN_ATTEMPTS, numAttempts + 1);
-            database.update(LocalDbSchema.TABLE_MYCLIMBS, values,
-                    LocalDbSchema.COLUMN_ID + "=" + _id, null);
+            values.put(ClimberLocalDbSchema.COLUMN_ATTEMPTS, numAttempts + 1);
+            database.update(ClimberLocalDbSchema.TABLE_MYCLIMBS, values,
+                    ClimberLocalDbSchema.COLUMN_ID + "=" + _id, null);
         }
     }
 
     public void addRemoveSent(int _id, int type, int grade) {
         // check if already in table
-        Cursor cursor = database.query(LocalDbSchema.TABLE_MYCLIMBS,
-                LocalDbSchema.ALL_MYCLIMBS_COLUMNS,
-                LocalDbSchema.COLUMN_ID + "=" + _id,
+        Cursor cursor = database.query(ClimberLocalDbSchema.TABLE_MYCLIMBS,
+                ClimberLocalDbSchema.ALL_MYCLIMBS_COLUMNS,
+                ClimberLocalDbSchema.COLUMN_ID + "=" + _id,
                 null, null, null, null);
         boolean hasItem = cursor.moveToFirst();
         boolean addSent = true;
@@ -96,13 +96,13 @@ public class LocalDbSource {
             insertMyClimb(_id, false, 0, true);
         } else {
             //  toggle sent
-            addSent = !(cursor.getInt(cursor.getColumnIndex(LocalDbSchema.COLUMN_SENT))>0);
+            addSent = !(cursor.getInt(cursor.getColumnIndex(ClimberLocalDbSchema.COLUMN_SENT))>0);
 
             ContentValues values = new ContentValues();
-            values.put(LocalDbSchema.COLUMN_SENT, addSent);
-            database.update(LocalDbSchema.TABLE_MYCLIMBS, values,
-                    LocalDbSchema.COLUMN_ID + "=" + _id, null);
-            values.put(LocalDbSchema.COLUMN_SENT, addSent);
+            values.put(ClimberLocalDbSchema.COLUMN_SENT, addSent);
+            database.update(ClimberLocalDbSchema.TABLE_MYCLIMBS, values,
+                    ClimberLocalDbSchema.COLUMN_ID + "=" + _id, null);
+            values.put(ClimberLocalDbSchema.COLUMN_SENT, addSent);
         }
 
         // update stats accordingly
@@ -115,18 +115,18 @@ public class LocalDbSource {
 
         // first check if the type, grade combo is in the table
         ContentValues values = new ContentValues();
-        Cursor cursor = database.query(LocalDbSchema.TABLE_MYSTATS,
-                LocalDbSchema.ALL_MYSTATS_COLUMNS,
-                LocalDbSchema.COLUMN_TYPE + "=?  AND " + LocalDbSchema.COLUMN_GRADE + "=?",
+        Cursor cursor = database.query(ClimberLocalDbSchema.TABLE_MYSTATS,
+                ClimberLocalDbSchema.ALL_MYSTATS_COLUMNS,
+                ClimberLocalDbSchema.COLUMN_TYPE + "=?  AND " + ClimberLocalDbSchema.COLUMN_GRADE + "=?",
                 new String[] {String.valueOf(type), String.valueOf(grade)},null, null, null);
 
         boolean hasItem = cursor.moveToFirst();
         if(!hasItem){
             if(increment){
-                values.put(LocalDbSchema.COLUMN_TOTAL, 1);
-                values.put(LocalDbSchema.COLUMN_TYPE, type);
-                values.put(LocalDbSchema.COLUMN_GRADE, grade);
-                database.insert(LocalDbSchema.TABLE_MYSTATS,
+                values.put(ClimberLocalDbSchema.COLUMN_TOTAL, 1);
+                values.put(ClimberLocalDbSchema.COLUMN_TYPE, type);
+                values.put(ClimberLocalDbSchema.COLUMN_GRADE, grade);
+                database.insert(ClimberLocalDbSchema.TABLE_MYSTATS,
                         null,
                         values);
             }else{
@@ -136,72 +136,72 @@ public class LocalDbSource {
             }
         }
         else{
-            int total = cursor.getInt(cursor.getColumnIndex(LocalDbSchema.COLUMN_TOTAL));
+            int total = cursor.getInt(cursor.getColumnIndex(ClimberLocalDbSchema.COLUMN_TOTAL));
             if(increment){
-                values.put(LocalDbSchema.COLUMN_TOTAL, total+1);
+                values.put(ClimberLocalDbSchema.COLUMN_TOTAL, total+1);
             }else{
                 if(total == 0) {
                     Log.e(TAG, "Cannot decrement stat, stat = 0");
                     return;
                 } else {
-                    values.put(LocalDbSchema.COLUMN_TOTAL, total - 1);
+                    values.put(ClimberLocalDbSchema.COLUMN_TOTAL, total - 1);
                 }
             }
-            database.update(LocalDbSchema.TABLE_MYSTATS,
+            database.update(ClimberLocalDbSchema.TABLE_MYSTATS,
                     values,
-                    LocalDbSchema.COLUMN_TYPE + "=?  AND " + LocalDbSchema.COLUMN_GRADE + "=?",
+                    ClimberLocalDbSchema.COLUMN_TYPE + "=?  AND " + ClimberLocalDbSchema.COLUMN_GRADE + "=?",
                     new String[] {String.valueOf(type), String.valueOf(grade)});
         }
     }
 
     public boolean isProject(int id) {
         // check if climb given by id is a project
-        Cursor cursor = database.query(LocalDbSchema.TABLE_MYCLIMBS,
-                new String[]{LocalDbSchema.COLUMN_PROJECT},
-                LocalDbSchema.COLUMN_ID + " = " + id,
+        Cursor cursor = database.query(ClimberLocalDbSchema.TABLE_MYCLIMBS,
+                new String[]{ClimberLocalDbSchema.COLUMN_PROJECT},
+                ClimberLocalDbSchema.COLUMN_ID + " = " + id,
                 null, null, null, null);
         if(cursor.getCount() == 0) {
             return false;
         }else{
             cursor.moveToFirst();
-            return cursor.getInt(cursor.getColumnIndex(LocalDbSchema.COLUMN_PROJECT))>0;
+            return cursor.getInt(cursor.getColumnIndex(ClimberLocalDbSchema.COLUMN_PROJECT))>0;
         }
     }
 
     public boolean isSent(int id) {
         // check if climb given by id is a project
-        Cursor cursor = database.query(LocalDbSchema.TABLE_MYCLIMBS,
-                new String[]{LocalDbSchema.COLUMN_SENT},
-                LocalDbSchema.COLUMN_ID + " = " + id,
+        Cursor cursor = database.query(ClimberLocalDbSchema.TABLE_MYCLIMBS,
+                new String[]{ClimberLocalDbSchema.COLUMN_SENT},
+                ClimberLocalDbSchema.COLUMN_ID + " = " + id,
                 null, null, null, null);
         if(cursor.getCount() == 0) {
             return false;
         }else{
             cursor.moveToFirst();
-            return cursor.getInt(cursor.getColumnIndex(LocalDbSchema.COLUMN_SENT))>0;
+            return cursor.getInt(cursor.getColumnIndex(ClimberLocalDbSchema.COLUMN_SENT))>0;
         }
     }
 
     public String getProjectIds() {
-        Cursor cursor = database.query(LocalDbSchema.TABLE_MYCLIMBS,
-                new String[] {LocalDbSchema.COLUMN_ID},
-                LocalDbSchema.COLUMN_PROJECT + " > 0",
+        Cursor cursor = database.query(ClimberLocalDbSchema.TABLE_MYCLIMBS,
+                new String[] {ClimberLocalDbSchema.COLUMN_ID},
+                ClimberLocalDbSchema.COLUMN_PROJECT + " > 0",
                 null, null, null, null);
         List<String> array = new ArrayList<String>();
         while(cursor.moveToNext()){
-            array.add(cursor.getString(cursor.getColumnIndex(LocalDbSchema.COLUMN_ID)));
+            array.add(cursor.getString(cursor.getColumnIndex(ClimberLocalDbSchema.COLUMN_ID)));
         }
         return array.toString().replace('[', '(').replace(']',')');  // change [1,2,3...] to (1,2,3...)
     }
 
     public String getSentIds() {
-        Cursor cursor = database.query(LocalDbSchema.TABLE_MYCLIMBS,
-                new String[] {LocalDbSchema.COLUMN_ID},
-                LocalDbSchema.COLUMN_SENT + " > 0",
+        Cursor cursor = database.query(ClimberLocalDbSchema.TABLE_MYCLIMBS,
+                new String[] {ClimberLocalDbSchema.COLUMN_ID},
+                ClimberLocalDbSchema.COLUMN_SENT + " > 0",
                 null, null, null, null);
         List<String> array = new ArrayList<String>();
         while(cursor.moveToNext()){
-            array.add(cursor.getString(cursor.getColumnIndex(LocalDbSchema.COLUMN_ID)));
+            array.add(cursor.getString(cursor.getColumnIndex(ClimberLocalDbSchema.COLUMN_ID)));
         }
         return array.toString().replace('[', '(').replace(']',')');  // change [1,2,3...] to (1,2,3...)
     }
@@ -210,14 +210,14 @@ public class LocalDbSource {
     class LocalDbHelper extends SQLiteOpenHelper {
 
         public LocalDbHelper(Context context) {
-            super(context, LocalDbSchema.DATABASE_NAME, null, LocalDbSchema.DATABASE_VERSION);
+            super(context, ClimberLocalDbSchema.DATABASE_NAME, null, ClimberLocalDbSchema.DATABASE_VERSION);
         }
 
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(LocalDbSchema.CREATE_TBL_MYCLIMBS);
-            db.execSQL(LocalDbSchema.CREATE_TBL_MYSTATS);
+            db.execSQL(ClimberLocalDbSchema.CREATE_TBL_MYCLIMBS);
+            db.execSQL(ClimberLocalDbSchema.CREATE_TBL_MYSTATS);
         }
 
         @Override
@@ -226,8 +226,8 @@ public class LocalDbSource {
              * for now, erase old data and create a new one
              * TODO: change this so we don't drop all the data
              */
-            db.execSQL(LocalDbSchema.DROP_TBL_MYCLIMBS);
-            db.execSQL(LocalDbSchema.DROP_TBL_MYSTATS);
+            db.execSQL(ClimberLocalDbSchema.DROP_TBL_MYCLIMBS);
+            db.execSQL(ClimberLocalDbSchema.DROP_TBL_MYSTATS);
             onCreate(db);
         }
 
@@ -237,8 +237,8 @@ public class LocalDbSource {
              * for now, erase old data and create a new one
              * TODO: change this so we don't drop all the data
              */
-            db.execSQL(LocalDbSchema.DROP_TBL_MYCLIMBS);
-            db.execSQL(LocalDbSchema.DROP_TBL_MYSTATS);
+            db.execSQL(ClimberLocalDbSchema.DROP_TBL_MYCLIMBS);
+            db.execSQL(ClimberLocalDbSchema.DROP_TBL_MYSTATS);
             onCreate(db);
         }
     }

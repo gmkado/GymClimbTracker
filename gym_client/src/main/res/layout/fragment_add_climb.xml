@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/typeSpinner"
                 android:layout_column="1"
-                android:spinnerMode="dropdown"
+                android:spinnerMode="dialog"
                 android:layout_weight="2" />
         </TableRow>
 
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/areaSpinner"
                 android:layout_column="1"
-                android:spinnerMode="dropdown"
+                android:spinnerMode="dialog"
                 android:layout_weight="2"/>
         </TableRow>
 
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/gradeSpinner"
             android:layout_column="1"
-            android:spinnerMode="dropdown"
+            android:spinnerMode="dialog"
             android:layout_weight="2"/>
     </TableRow>
 
@@ -100,18 +100,70 @@
 
     </TableRow>
 
-</TableLayout>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
-    <com.larswerkman.holocolorpicker.ColorPicker
-        android:id="@+id/picker"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center_vertical|center_horizontal"
-        />
-    <com.larswerkman.holocolorpicker.SVBar
-        android:id="@+id/svbar"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Primary Color"
+                android:layout_weight="1"
+                android:id="@+id/textView" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/primaryColorSpinner"
+                android:layout_weight="2"
+                android:spinnerMode="dialog" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Secondary Color"
+                android:layout_weight="1"
+                android:id="@+id/textView1" />
+
+            <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/secondaryColorSpinner"
+                android:layout_weight="2"
+                android:spinnerMode="dialog" />
+
+        </TableRow>
+    </TableLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="0px"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Add Color"
+            android:id="@+id/colorPickerButton"/>
+
+        <Button
+            android:layout_width="0px"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Remove Color"
+            android:id="@+id/colorRemoverButton" />
+    </LinearLayout>
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -119,4 +171,5 @@
         android:id="@+id/addClimbButton"
         android:layout_gravity="fill"
         />
+
 </LinearLayout>

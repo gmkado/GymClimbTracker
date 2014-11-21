@@ -12,6 +12,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -31,7 +32,7 @@ import com.grant.gymclimbtracker.climb_contract.ShowMapFragment;
 public class ClimberListFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener, View.OnClickListener {
     private static final int CLIMB_LIST_ID = 1;
-    private static final String TAG = "GymListFragment";
+    private static final String TAG = "ClimberListFragment";
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     //--private static final String ARG_PARAM1 = "param1";
 
@@ -39,7 +40,7 @@ public class ClimberListFragment extends ListFragment implements
 
     private OnClimberListFragmentInteractionListener mListener;
     private ContentResolver resolver;
-    private LocalDbSource mDbSource;
+    private ClimberLocalDbSource mDbSource;
     private String[] mSelectionArgs;
     private String mSelection;
     private String mSortOrder = ClimbContract.Climbs.SORT_ORDER_DEFAULT;
@@ -159,6 +160,7 @@ public class ClimberListFragment extends ListFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "onCreate");
         /*--if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
 
@@ -168,8 +170,10 @@ public class ClimberListFragment extends ListFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(TAG, "onCreateView");
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_climber_list, container, false);
+
         Spinner spinner = ((Spinner)v.findViewById(R.id.filterSpinner));
         spinner.setAdapter(new ArrayAdapter<filterBy>(getActivity(),android.R.layout.simple_spinner_dropdown_item,filterBy.values()));
         spinner.setOnItemSelectedListener(this);
@@ -203,19 +207,20 @@ public class ClimberListFragment extends ListFragment implements
     @Override
    public void onAttach(Activity activity) {
         super.onAttach(activity);
+        Log.i(TAG, "onAttach");
         try {
             mListener = (OnClimberListFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        mDbSource = mListener.getDbSource();
 
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
+        Log.i(TAG, "onDetach");
         mListener = null;
     }
 
@@ -227,9 +232,17 @@ public class ClimberListFragment extends ListFragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.i(TAG, "onActivityCreated");
+        // content resolver for web database
         resolver = getActivity().getContentResolver();
         getLoaderManager().initLoader(CLIMB_LIST_ID, null, this);
+
+        // get local database source from main activity
+        mDbSource = mListener.getDbSource();
+
+        // now that activity is created, register the view for context menu
         registerForContextMenu(getListView());
+
     }
 
     @Override
@@ -252,17 +265,17 @@ public class ClimberListFragment extends ListFragment implements
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
         if(getListAdapter()==null) {
-            ClimbCursorAdapter adapter = new ClimbCursorAdapter(getActivity(), cursor, 0);
+            ClimberCursorAdapter adapter = new ClimberCursorAdapter(getActivity(), cursor, 0);
             this.setListAdapter(adapter);
         }
          else{
-            ((ClimbCursorAdapter)this.getListAdapter()).swapCursor(cursor);
+            ((ClimberCursorAdapter)this.getListAdapter()).swapCursor(cursor);
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        ((SimpleCursorAdapter)this.getListAdapter()).swapCursor(null);
+        ((ClimberCursorAdapter)this.getListAdapter()).swapCursor(null);
     }
 
     @Override
@@ -421,7 +434,7 @@ public class ClimberListFragment extends ListFragment implements
     public interface OnClimberListFragmentInteractionListener {
         public void onGymListFragmentInteraction(Uri uri);
 
-        public LocalDbSource getDbSource();
+        public ClimberLocalDbSource getDbSource();
     }
 
 }

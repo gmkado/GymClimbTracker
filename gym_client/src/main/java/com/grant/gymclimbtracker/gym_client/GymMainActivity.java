@@ -24,6 +24,7 @@ public class GymMainActivity extends FragmentActivity
 {
 
     MyPageAdapter pageAdapter;
+    private GymLocalDbSource mDbSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +37,9 @@ public class GymMainActivity extends FragmentActivity
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
 
-        // check if the contentprovider exists, if not then enable it
-        //ClimbContract.setAUTHORITY(this.getPackageName() + ".ClimbProvider");
-        //ClimbContract.createIfNonExistent(this);
+        // create dbsource for local database
+        mDbSource = new GymLocalDbSource(this);
+        mDbSource.open();
     }
 
     private List<Fragment> getFragments() {
@@ -72,8 +73,8 @@ public class GymMainActivity extends FragmentActivity
 
 
     @Override
-    public void onAddClimbFragmentInteraction(Uri uri) {
-
+    public GymLocalDbSource getDbSource() {
+        return mDbSource;
     }
 
     @Override

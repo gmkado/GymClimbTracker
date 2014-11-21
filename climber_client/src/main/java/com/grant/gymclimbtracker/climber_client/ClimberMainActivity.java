@@ -1,7 +1,6 @@
 package com.grant.gymclimbtracker.climber_client;
 
 
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,7 +20,7 @@ public class ClimberMainActivity extends FragmentActivity implements ClimberList
 {
 
     MyPageAdapter pageAdapter;
-    private LocalDbSource mDbSource;
+    private ClimberLocalDbSource mDbSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +34,7 @@ public class ClimberMainActivity extends FragmentActivity implements ClimberList
         pager.setAdapter(pageAdapter);
 
         // create dbsource for local database
-        mDbSource = new LocalDbSource(this);
+        mDbSource = new ClimberLocalDbSource(this);
         mDbSource.open();
     }
 
@@ -79,7 +78,7 @@ public class ClimberMainActivity extends FragmentActivity implements ClimberList
     }
 
     @Override
-    public LocalDbSource getDbSource() {
+    public ClimberLocalDbSource getDbSource() {
         // check if project is in project list
         return mDbSource;
     }

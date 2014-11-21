@@ -8,7 +8,7 @@ import static com.grant.gymclimbtracker.climb_contract.DbSchema.getCheckEqualsSt
 /**
  * Created by Grant on 11/1/2014.
  */
-public class LocalDbSchema {
+public class ClimberLocalDbSchema {
     /**
      * A helper interface which defines constants for work with the DB
      */
