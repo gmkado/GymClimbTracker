@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:textAppearance="@android:style/TextAppearance.Holo.Large"
+            android:text="Gym"
+            android:textColor="#ff000000"
+            android:id="@+id/textView"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal"
+            android:background="#ffc7c7c7" />
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/gymFilterSpinner"
+            android:layout_weight="1"
+            android:background="#ffc7c7c7" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:layout_gravity="right">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:text="Type"
+                android:textOff="Type"
+                android:textOn="Type"
+                android:id="@+id/typeTextView"
+                android:checked="false"
+                android:layout_weight="1"
+                android:background="#ffc7c7c7"
+                android:textAppearance="@android:style/TextAppearance.Holo.Large"
+                android:textColor="#ff000000"
+                android:gravity="center_vertical|center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/typeFilterSpinner"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame"
+        android:layout_gravity="right">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:text="Area"
+                android:textOff="Area"
+                android:textOn="Area"
+                android:id="@+id/areaTextView"
+                android:checked="false"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_weight="1"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#ff000000"
+                android:background="#ffc7c7c7" />
+
+            <Spinner
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:id="@+id/areaModeSpinner"
+                android:layout_weight="1"
+                android:background="#ffc7c7c7" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <ToggleButton
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textOn="A->Z"
+                android:textOff="Z->A"
+                android:text="New ToggleButton"
+                android:id="@+id/areaOrderToggleButton"
+                android:checked="true"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/areaFilterSpinner"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            >
+
+            <TextView
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:text="Grade"
+                android:textOff="Grade"
+                android:textOn="Grade"
+                android:id="@+id/gradeTextView"
+                android:checked="false"
+                android:layout_weight="1"
+                android:textAppearance="@android:style/TextAppearance.Holo.Large"
+                android:textColor="#ff000000"
+                android:background="#ffc7c7c7"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <Spinner
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:id="@+id/gradeModeSpinner"
+                android:layout_weight="1"
+                android:background="#ffc7c7c7" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <ToggleButton
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textOn="Increasing"
+                android:textOff="Decreasing"
+                android:text="New ToggleButton"
+                android:id="@+id/gradeOrderToggleButton"
+                android:checked="true"
+                android:layout_weight="1" />
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/gradeFilterSpinner"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame" >
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+
+            <TextView
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:text="Date"
+                android:textOff="Grade"
+                android:textOn="Grade"
+                android:id="@+id/textView2"
+                android:checked="false"
+                android:layout_weight="1"
+                android:textAppearance="@android:style/TextAppearance.Holo.Large"
+                android:textColor="#ff000000"
+                android:background="#ffc7c7c7"
+                android:gravity="center_vertical|center_horizontal" />
+
+            <ToggleButton
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textOn="Newest First"
+                android:textOff="Oldest First"
+                android:text="New ToggleButton"
+                android:id="@+id/dateOrderToggleButton"
+                android:checked="true"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:id="@+id/sortFiltOkayButton"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:text="CANCEL"
+            android:id="@+id/sortFiltCancelButton"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+</LinearLayout>

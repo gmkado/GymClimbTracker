@@ -22,7 +22,9 @@ import android.widget.Spinner;
 
 
 import com.grant.gymclimbtracker.climb_contract.ClimbContract;
+import com.grant.gymclimbtracker.climb_contract.DialogFragmentHandler;
 import com.grant.gymclimbtracker.climb_contract.ShowMapFragment;
+
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ import java.util.Calendar;
  *
  */
 public class AddClimbFragment extends Fragment
-        implements Spinner.OnItemSelectedListener, Button.OnClickListener, DatePickerDialog.OnDateSetListener, ColorPickerFragment.DialogFragmentHandler{
+        implements Spinner.OnItemSelectedListener, Button.OnClickListener, DatePickerDialog.OnDateSetListener, DialogFragmentHandler {
     private static final int COLOR_PICKER_FRAGMENT = 1;
     private static final int COLOR_REMOVER_FRAGMENT = 2;
 
@@ -157,6 +159,8 @@ public class AddClimbFragment extends Fragment
         Spinner spinner = (Spinner) v.findViewById(R.id.typeSpinner);
         spinner.setAdapter(new ArrayAdapter<ClimbContract.climbType>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.climbType.values()));
         spinner.setOnItemSelectedListener(this);
+        gradeSpinner = (Spinner) v.findViewById(R.id.gradeSpinner);
+        areaSpinner = (Spinner) v.findViewById(R.id.areaSpinner);
 
         resolver = getActivity().getContentResolver();
         return v;
@@ -190,22 +194,13 @@ public class AddClimbFragment extends Fragment
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
         switch(adapterView.getId()){
             case R.id.typeSpinner:
-
-                // set field variables for spinners if not already set
-                if(gradeSpinner == null){
-                    gradeSpinner = (Spinner) getActivity().findViewById(R.id.gradeSpinner);
-                }
-                if(areaSpinner == null){
-                    areaSpinner = (Spinner) getActivity().findViewById(R.id.areaSpinner);
-                }
-
                 // change fields according to climb type
                 if(position == ClimbContract.climbType.toprope.ordinal() || position == ClimbContract.climbType.lead.ordinal()) {
                     gradeSpinner.setAdapter(new ArrayAdapter<ClimbContract.ropeGrade>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.ropeGrade.values()));
-                    areaSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(), R.array.PGSV_ropeLoc, android.R.layout.simple_spinner_item));
+                    areaSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(),R.array.ropeAreas , android.R.layout.simple_spinner_item));
                 }else if (position == ClimbContract.climbType.boulder.ordinal()) {
                     gradeSpinner.setAdapter(new ArrayAdapter<ClimbContract.boulderGrade>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.boulderGrade.values()));
-                    areaSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(), R.array.PGSV_boulderLoc, android.R.layout.simple_spinner_item));
+                    areaSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(), R.array.boulderAreas, android.R.layout.simple_spinner_item));
 
                 }
 

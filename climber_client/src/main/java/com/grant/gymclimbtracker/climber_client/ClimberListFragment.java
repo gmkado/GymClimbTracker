@@ -21,18 +21,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.grant.gymclimbtracker.climb_contract.ClimbContract;
+import com.grant.gymclimbtracker.climb_contract.DialogFragmentHandler;
 import com.grant.gymclimbtracker.climb_contract.ShowMapFragment;
+import com.grant.gymclimbtracker.climb_contract.SortFilterFragment;
 
 
 public class ClimberListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener, View.OnClickListener {
+        LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemSelectedListener, View.OnClickListener, DialogFragmentHandler{
     private static final int CLIMB_LIST_ID = 1;
     private static final String TAG = "ClimberListFragment";
+    private static final int SORT_FILTER_FRAGMENT = 1;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     //--private static final String ARG_PARAM1 = "param1";
 
@@ -47,11 +52,19 @@ public class ClimberListFragment extends ListFragment implements
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.showMapButton){
-            DialogFragment fragment= ShowMapFragment.newInstance();
+        int id = v.getId();
+        DialogFragment fragment;
+        if(id == R.id.showMapButton){
+            fragment = ShowMapFragment.newInstance();
             fragment.show(getActivity().getSupportFragmentManager(), "showMap");
-        }else {
-            if (v.getId() == R.id.typeFilterToggle) {
+        }else if(id == R.id.sortFiltButton) {
+            // open sort filter dialog fragment
+            fragment = SortFilterFragment.newInstance();
+            fragment.setTargetFragment(this, SORT_FILTER_FRAGMENT);
+            fragment.show(getActivity().getSupportFragmentManager(), "sortFilter");
+        }
+        else{
+            if (id == R.id.typeFilterToggle) {
                 Spinner typeSpinner = (Spinner) getActivity().findViewById(R.id.typeSpinner);
                 if (((ToggleButton) v).isChecked()) {
                     // enable type spinner
@@ -62,6 +75,19 @@ public class ClimberListFragment extends ListFragment implements
                 }
             }
             refreshList();
+        }
+    }
+
+    @Override
+    public void handleDialogResult(int RequestCode, int ResultCode, Bundle data) {
+        switch (RequestCode){
+            case SORT_FILTER_FRAGMENT:
+                if(ResultCode == Activity.RESULT_OK) {
+                    // use the result string to sort the list
+
+                    Log.i(TAG, data.getString("mSelection"));
+                }
+                break;
         }
     }
 
@@ -191,13 +217,16 @@ public class ClimberListFragment extends ListFragment implements
         spinner.setAdapter(new ArrayAdapter<ClimbContract.climbType>(getActivity(), android.R.layout.simple_spinner_dropdown_item, ClimbContract.climbType.values()));
         spinner.setOnItemSelectedListener(this);
 
-        ToggleButton button = (ToggleButton)v.findViewById(R.id.sortOrderToggle1);
-        button.setOnClickListener(this);
+        ToggleButton toggleButton = (ToggleButton)v.findViewById(R.id.sortOrderToggle1);
+        toggleButton.setOnClickListener(this);
 
-        button = (ToggleButton)v.findViewById(R.id.sortOrderToggle2);
-        button.setOnClickListener(this);
+        toggleButton = (ToggleButton)v.findViewById(R.id.sortOrderToggle2);
+        toggleButton.setOnClickListener(this);
 
-        button = (ToggleButton)v.findViewById(R.id.typeFilterToggle);
+        toggleButton = (ToggleButton)v.findViewById(R.id.typeFilterToggle);
+        toggleButton.setOnClickListener(this);
+
+        ImageButton button = (ImageButton)v.findViewById(R.id.sortFiltButton);
         button.setOnClickListener(this);
 
         (v.findViewById(R.id.showMapButton)).setOnClickListener(this);

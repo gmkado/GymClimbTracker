@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name = "PGSV_boulderLoc">
+    <string name = "gym_name">PG Sunnyvale</string>
+    <string-array name = "boulderAreas">
         <item>Welcome Wall</item>
         <item>Left Cheek</item>
         <item>Right Cheek</item>
@@ -12,7 +13,7 @@
         <item>The Wave</item>
         <item>Corner-Copia</item>
     </string-array>
-    <string-array name="PGSV_ropeLoc">
+    <string-array name="ropeAreas">
         <item>The Alcove</item>
         <item>Storage Slabs</item>
         <item>The Tower</item>
@@ -32,4 +33,5 @@
         <item>Ice Box</item>
         <item>Yosemite Corner</item>
     </string-array>
+
 </resources>

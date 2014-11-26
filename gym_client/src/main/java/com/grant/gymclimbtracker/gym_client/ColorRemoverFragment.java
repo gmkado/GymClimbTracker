@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+
+import com.grant.gymclimbtracker.climb_contract.DialogFragmentHandler;
 import com.grant.gymclimbtracker.gym_client.ColorPickerFragment.*;
 
 /**
