@@ -11,72 +11,21 @@ tools:context="com.grant.gymclimbtracker.gym_client.GymListFragment">
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Filter"
-            android:id="@+id/textView4" />
+            android:id="@+id/textView4"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_weight="1" />
 
         <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/filterSpinner" />
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/filterLocalSpinner"
+            android:layout_weight="5" />
 
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textOn="Type"
-            android:textOff="Type"
-            android:checked="true"
-            android:id="@+id/typeFilterToggle" />
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/typeSpinner" />
     </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Sort"
-            android:id="@+id/textView" />
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sortSpinner1" />
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="@string/ASC"
-            android:textOff="@string/DESC"
-            android:checked="true"
-            android:id = "@+id/sortOrderToggle1"/>
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/sortSpinner2" />
-        <ToggleButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textOn="@string/ASC"
-            android:textOff="@string/DESC"
-            android:checked="true"
-            android:id = "@+id/sortOrderToggle2"/>
-    </LinearLayout>
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Show Map"
-        android:id="@+id/showMapButton"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -96,6 +45,13 @@ tools:context="com.grant.gymclimbtracker.gym_client.GymListFragment">
             android:layout_height="wrap_content"
             android:id="@+id/sortFiltButton"
             android:src="@drawable/ic_action_31063"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Show Map"
+            android:id="@+id/showMapButton"
             android:layout_weight="1" />
     </LinearLayout>
 

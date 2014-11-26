@@ -11,6 +11,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.ToggleButton;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -32,6 +39,16 @@ public class SortFilterFragment extends DialogFragment implements View.OnClickLi
     private Spinner typeFilterSpinner;
     final modeType[] modeVals = modeType.values();
     final ClimbContract.climbType[] typeVals = ClimbContract.climbType.values();
+    private ArrayList<Integer> sortOrderList = new ArrayList<Integer>();
+    private static final Map<Integer, String> viewToContract;// convert view to contract, for sort order
+    static{
+        Map<Integer, String> temp = new HashMap<Integer, String>();
+        temp.put(R.id.areaOrderToggleButton, ClimbContract.Climbs.AREA);
+        temp.put(R.id.gradeOrderToggleButton, ClimbContract.Climbs.GRADE);
+        temp.put(R.id.dateOrderToggleButton, ClimbContract.Climbs.DATE_SET);
+
+        viewToContract = Collections.unmodifiableMap(temp);
+    }
 
     private enum modeType {
         none("Not used"),
@@ -71,12 +88,19 @@ public class SortFilterFragment extends DialogFragment implements View.OnClickLi
          * If the mode spinners changed, modify the appropriate views
          */
         else if(viewId == R.id.areaModeSpinner) {
+            // remove from sort order
+            if(sortOrderList.contains(R.id.areaOrderToggleButton)) {
+                sortOrderList.remove(Integer.valueOf(R.id.areaOrderToggleButton));
+            }
             switch(modeVals[position]) {
                 case none: // Don't use filter/sort
                     getView().findViewById(R.id.areaOrderToggleButton).setVisibility(View.GONE);
                     getView().findViewById(R.id.areaFilterSpinner).setVisibility(View.GONE);
                     break;
                 case sort: // Sort
+                    // add it to sort order
+                    sortOrderList.add(Integer.valueOf(R.id.areaOrderToggleButton));
+
                     getView().findViewById(R.id.areaOrderToggleButton).setVisibility(View.VISIBLE);
                     getView().findViewById(R.id.areaFilterSpinner).setVisibility(View.GONE);
                     break;
@@ -86,12 +110,19 @@ public class SortFilterFragment extends DialogFragment implements View.OnClickLi
                     break;
             }
         }else if(viewId == R.id.gradeModeSpinner) {
-            switch(modeVals[position]) {
+            // remove from sort order
+            if (sortOrderList.contains(R.id.gradeOrderToggleButton)) {
+                sortOrderList.remove(Integer.valueOf(R.id.gradeOrderToggleButton));
+            }
+            switch (modeVals[position]) {
                 case none: // Don't use filter/sort
                     getView().findViewById(R.id.gradeOrderToggleButton).setVisibility(View.GONE);
                     getView().findViewById(R.id.gradeFilterSpinner).setVisibility(View.GONE);
                     break;
                 case sort: // Sort
+                    // add it to sort order
+                    sortOrderList.add(Integer.valueOf(R.id.gradeOrderToggleButton));
+
                     getView().findViewById(R.id.gradeOrderToggleButton).setVisibility(View.VISIBLE);
                     getView().findViewById(R.id.gradeFilterSpinner).setVisibility(View.GONE);
                     break;
@@ -101,6 +132,19 @@ public class SortFilterFragment extends DialogFragment implements View.OnClickLi
                     break;
             }
         }
+        String sortOrderText= "";
+        for(int sortViewId:sortOrderList){
+            if(!sortOrderText.isEmpty()){
+                sortOrderText += " -> ";
+            }
+            sortOrderText += viewToContract.get(Integer.valueOf(sortViewId));
+        }
+        if(!sortOrderText.isEmpty()){
+            sortOrderText += " -> ";
+        }
+        sortOrderText += ClimbContract.Climbs.DATE_SET;
+
+        ((TextView)(getView().findViewById(R.id.sortOrderTextView))).setText(sortOrderText);
 
     }
 
@@ -199,51 +243,67 @@ public class SortFilterFragment extends DialogFragment implements View.OnClickLi
             int viewId = v.getId();
 
             if(viewId == R.id.sortFiltOkayButton) {
-                // TODO:build up SQL string and pass to handler
+                // build up SQL string and pass to handler
 
 
-                String mSelection = "";
+                String mSelection;
+
                 switch (typeVals[typeFilterSpinner.getSelectedItemPosition()]) {
                     case boulder:
-                        mSelection = mSelection + ClimbContract.Climbs.TYPE + " = " + ClimbContract.climbType.boulder.ordinal();
+                        mSelection = ClimbContract.Climbs.TYPE + " = " + ClimbContract.climbType.boulder.ordinal();
                         break;
                     case lead:
-                        mSelection = mSelection + ClimbContract.Climbs.TYPE + " = " + ClimbContract.climbType.lead.ordinal();
+                        mSelection = ClimbContract.Climbs.TYPE + " = " + ClimbContract.climbType.lead.ordinal();
                         break;
                     case toprope:
-                        mSelection = mSelection + ClimbContract.Climbs.TYPE + " = " + ClimbContract.climbType.toprope.ordinal();
+                        mSelection = ClimbContract.Climbs.TYPE + " = " + ClimbContract.climbType.toprope.ordinal();
                         break;
                     default:
                         throw new IllegalArgumentException("Unrecognized type filter selection");
                 }
 
                 /**
-                 * Parse area views
+                 * Add filters
                  */
-                switch(modeVals[((Spinner)getView().findViewById(R.id.areaModeSpinner)).getSelectedItemPosition()]){
-                    case filter:
-                        mSelection = mSelection + " AND " + ClimbContract.Climbs.AREA + " = " + (areaFilterSpinner.getSelectedItem()).toString();
-                        break;
-                    case sort:
-                        // add to sort string
-                        break;
+                if(modeVals[((Spinner)getView().findViewById(R.id.areaModeSpinner)).
+                        getSelectedItemPosition()] == modeType.filter){
+                        mSelection += " AND " + ClimbContract.Climbs.AREA + " = '" + (areaFilterSpinner.getSelectedItem()).toString()+"'";
+                }
+                if(modeVals[((Spinner)getView().findViewById(R.id.gradeModeSpinner)).
+                        getSelectedItemPosition()] == modeType.filter){
+                        mSelection += " AND " + ClimbContract.Climbs.GRADE + " = " + gradeFilterSpinner.getSelectedItemPosition();
                 }
 
                 /**
-                 * Parse grade views
+                 * Create sort order string using the sortorder list
                  */
-                switch(modeVals[((Spinner)getView().findViewById(R.id.gradeModeSpinner)).getSelectedItemPosition()]){
-                    case filter:
-                        mSelection = mSelection + " AND " + ClimbContract.Climbs.GRADE + " = " + gradeFilterSpinner.getSelectedItemPosition();
-                        break;
-                    case sort:
-                        // add to sort string
-                        break;
+                String mSortOrder = "";
+                for(Integer sortViewId:sortOrderList) {
+                    if(!mSortOrder.isEmpty()){
+                        mSortOrder += ", ";
+                    }
+
+                    // add contract item associated with sort
+                    mSortOrder += viewToContract.get(sortViewId);
+                    if(((ToggleButton)getView().findViewById(sortViewId)).isChecked()) {
+                        mSortOrder += " ASC";
+                    }else{
+                        mSortOrder += " DESC";
+                    }
+                }
+                // always use date as last sort item
+                if(!mSortOrder.isEmpty()){
+                    mSortOrder += ", ";
+                }
+                mSortOrder += ClimbContract.Climbs.DATE_SET;
+                if(((ToggleButton)getView().findViewById(R.id.dateOrderToggleButton)).isChecked()) {
+                    mSortOrder += " ASC";
+                }else{
+                    mSortOrder += " DESC";
                 }
 
-
-
                 b.putString("mSelection", mSelection);
+                b.putString("mSortOrder", mSortOrder);
                 mListener.handleDialogResult(getTargetRequestCode(), Activity.RESULT_OK, b);
 
             }else if(viewId == R.id.sortFiltCancelButton){

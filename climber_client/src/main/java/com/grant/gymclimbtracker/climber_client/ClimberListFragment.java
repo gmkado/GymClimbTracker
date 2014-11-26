@@ -11,7 +11,6 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -21,11 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.grant.gymclimbtracker.climb_contract.ClimbContract;
 import com.grant.gymclimbtracker.climb_contract.DialogFragmentHandler;
@@ -49,6 +46,8 @@ public class ClimberListFragment extends ListFragment implements
     private String[] mSelectionArgs;
     private String mSelection;
     private String mSortOrder = ClimbContract.Climbs.SORT_ORDER_DEFAULT;
+    private String mLocalSelection;
+    private String mProviderSelection;
 
     @Override
     public void onClick(View v) {
@@ -63,19 +62,6 @@ public class ClimberListFragment extends ListFragment implements
             fragment.setTargetFragment(this, SORT_FILTER_FRAGMENT);
             fragment.show(getActivity().getSupportFragmentManager(), "sortFilter");
         }
-        else{
-            if (id == R.id.typeFilterToggle) {
-                Spinner typeSpinner = (Spinner) getActivity().findViewById(R.id.typeSpinner);
-                if (((ToggleButton) v).isChecked()) {
-                    // enable type spinner
-                    typeSpinner.setEnabled(true);
-                } else {
-                    // disable type spinner
-                    typeSpinner.setEnabled(false);
-                }
-            }
-            refreshList();
-        }
     }
 
     @Override
@@ -84,8 +70,9 @@ public class ClimberListFragment extends ListFragment implements
             case SORT_FILTER_FRAGMENT:
                 if(ResultCode == Activity.RESULT_OK) {
                     // use the result string to sort the list
-
-                    Log.i(TAG, data.getString("mSelection"));
+                    mProviderSelection = data.getString("mSelection");
+                    mSortOrder = data.getString("mSortOrder");
+                    refreshList();
                 }
                 break;
         }
@@ -200,31 +187,9 @@ public class ClimberListFragment extends ListFragment implements
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_climber_list, container, false);
 
-        Spinner spinner = ((Spinner)v.findViewById(R.id.filterSpinner));
+        Spinner spinner = ((Spinner)v.findViewById(R.id.filterLocalSpinner));
         spinner.setAdapter(new ArrayAdapter<filterBy>(getActivity(),android.R.layout.simple_spinner_dropdown_item,filterBy.values()));
         spinner.setOnItemSelectedListener(this);
-
-
-        spinner = ((Spinner)v.findViewById(R.id.sortSpinner1));
-        spinner.setAdapter(new ArrayAdapter<sortBy>(getActivity(), android.R.layout.simple_spinner_dropdown_item,sortBy.values()));
-        spinner.setOnItemSelectedListener(this);
-
-        spinner = ((Spinner)v.findViewById(R.id.sortSpinner2));
-        spinner.setAdapter(new ArrayAdapter<sortBy>(getActivity(), android.R.layout.simple_spinner_dropdown_item,sortBy.values()));
-        spinner.setOnItemSelectedListener(this);
-
-        spinner = ((Spinner)v.findViewById(R.id.typeSpinner));
-        spinner.setAdapter(new ArrayAdapter<ClimbContract.climbType>(getActivity(), android.R.layout.simple_spinner_dropdown_item, ClimbContract.climbType.values()));
-        spinner.setOnItemSelectedListener(this);
-
-        ToggleButton toggleButton = (ToggleButton)v.findViewById(R.id.sortOrderToggle1);
-        toggleButton.setOnClickListener(this);
-
-        toggleButton = (ToggleButton)v.findViewById(R.id.sortOrderToggle2);
-        toggleButton.setOnClickListener(this);
-
-        toggleButton = (ToggleButton)v.findViewById(R.id.typeFilterToggle);
-        toggleButton.setOnClickListener(this);
 
         ImageButton button = (ImageButton)v.findViewById(R.id.sortFiltButton);
         button.setOnClickListener(this);
@@ -309,7 +274,31 @@ public class ClimberListFragment extends ListFragment implements
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        refreshList();
+        final filterBy[] filtVals = filterBy.values();
+        switch (parent.getId()) {
+            case R.id.filterLocalSpinner:
+                switch (filtVals[((Spinner) getActivity().findViewById(R.id.filterLocalSpinner)).getSelectedItemPosition()]) {
+                    case showAll: // show all
+                        break;
+                    case projects:
+                        // show projects
+                        // get the project ids
+                        mLocalSelection = ClimbContract.Climbs._ID + " IN " + mDbSource.getProjectIds();
+                        break;
+                    case unsent:
+                        // show only unsent
+                        mLocalSelection = ClimbContract.Climbs._ID + " NOT IN " + mDbSource.getSentIds();
+                        break;
+                    case sent:
+                        // show only sent
+                        mLocalSelection = ClimbContract.Climbs._ID + " IN " + mDbSource.getSentIds();
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unrecognized filter selection");
+                }
+                refreshList();
+                break;
+        }
     }
 
     @Override
@@ -323,8 +312,6 @@ public class ClimberListFragment extends ListFragment implements
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         TextView tv = (TextView)(info.targetView.findViewById(R.id.idListItem));
         int id = Integer.parseInt((String)tv.getText());
-
-
 
         switch (item.getItemId()) {
             case R.id.addRemoveProjects:
@@ -353,98 +340,18 @@ public class ClimberListFragment extends ListFragment implements
     }
 
     private void refreshList() {
-        Spinner filterSpinner = (Spinner)getActivity().findViewById(R.id.filterSpinner);
-        Spinner typeSpinner = (Spinner)getActivity().findViewById(R.id.typeSpinner);
+        mSelection = "";
 
-        final filterBy[] filtVals = filterBy.values();
-        final sortBy[] sortVals = sortBy.values();
-        final ClimbContract.climbType[] typeVals = ClimbContract.climbType.values();
-
-        /**
-         * Create filter string
-         */
-        mSelection = null;
-        mSelectionArgs = null;
-        switch(filtVals[filterSpinner.getSelectedItemPosition()]) {
-            case showAll: // show all
-                break;
-            case projects:
-                // show projects
-                // get the project ids
-                mSelection = ClimbContract.Climbs._ID + " IN " + mDbSource.getProjectIds();
-                break;
-            case unsent:
-                // show only unsent
-                mSelection = ClimbContract.Climbs._ID + " NOT IN " + mDbSource.getSentIds();
-                break;
-            case sent:
-                // show only sent
-                mSelection = ClimbContract.Climbs._ID + " IN " + mDbSource.getSentIds();
-                break;
-            default:
-                throw new IllegalArgumentException("Unrecognized filter selection");
+        if(mProviderSelection != null && !mProviderSelection.isEmpty()) {
+            mSelection = mProviderSelection;
         }
-
-        // if we want to filter by type too
-        if(((ToggleButton)getActivity().findViewById(R.id.typeFilterToggle)).isChecked()) {
-            if(mSelection != null){
-                mSelection = mSelection + " AND ";
-            } else{
-                mSelection = "";
+        if(mLocalSelection != null && !mLocalSelection.isEmpty()){
+            if(!mSelection.isEmpty()) {
+                mSelection += " AND ";
             }
-            switch (typeVals[typeSpinner.getSelectedItemPosition()]) {
-                case boulder:
-                    mSelection = mSelection + ClimbContract.Climbs.TYPE + " = " + ClimbContract.climbType.boulder.ordinal();
-                    break;
-                case lead:
-                    mSelection = mSelection + ClimbContract.Climbs.TYPE + " = " + ClimbContract.climbType.lead.ordinal();
-                    break;
-                case toprope:
-                    mSelection = mSelection + ClimbContract.Climbs.TYPE + " = " + ClimbContract.climbType.toprope.ordinal();
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unrecognized type filter selection");
-            }
+            mSelection += mLocalSelection;
         }
 
-        /**
-         * Create sort string
-         */
-        Spinner sortSpinner = (Spinner)getActivity().findViewById(R.id.sortSpinner1);
-        switch(sortVals[sortSpinner.getSelectedItemPosition()]){
-            case grade:
-                mSortOrder = ClimbContract.Climbs.GRADE;
-                break;
-            case area:
-                mSortOrder = ClimbContract.Climbs.AREA;
-                break;
-            case dateSet:
-                mSortOrder = ClimbContract.Climbs.DATE_SET;
-                break;
-            default:
-                throw new IllegalArgumentException("Unrecognized sort value");
-        }
-        mSortOrder = mSortOrder + " " + ((ToggleButton)getActivity().findViewById(R.id.sortOrderToggle1)).getText().toString();
-
-        Spinner sortSpinner2 = (Spinner)getActivity().findViewById(R.id.sortSpinner2);
-
-        if(sortSpinner.getSelectedItemPosition()!=sortSpinner2.getSelectedItemPosition()){
-
-            switch (sortVals[sortSpinner2.getSelectedItemPosition()]) {
-                case grade:
-                    mSortOrder = mSortOrder + "," +ClimbContract.Climbs.GRADE;
-                    break;
-                case area:
-                    mSortOrder = mSortOrder + ","+ ClimbContract.Climbs.AREA;
-                    break;
-                case dateSet:
-                    mSortOrder = mSortOrder + ","+ClimbContract.Climbs.DATE_SET;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unrecognized sort value");
-            }
-            mSortOrder = mSortOrder + " " + ((ToggleButton) getActivity().findViewById(R.id.sortOrderToggle2)).getText().toString();
-        }
 
         getLoaderManager().restartLoader(CLIMB_LIST_ID,null,this);
     }

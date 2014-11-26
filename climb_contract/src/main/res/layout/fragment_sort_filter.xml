@@ -6,28 +6,54 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@android:drawable/dialog_holo_light_frame">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:textAppearance="@android:style/TextAppearance.Holo.Large"
-            android:text="Gym"
-            android:textColor="#ff000000"
-            android:id="@+id/textView"
-            android:layout_weight="1"
-            android:gravity="center_vertical|center_horizontal"
-            android:background="#ffc7c7c7" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
-        <Spinner
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:id="@+id/gymFilterSpinner"
-            android:layout_weight="1"
-            android:background="#ffc7c7c7" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:textAppearance="@android:style/TextAppearance.Holo.Large"
+                android:text="Gym"
+                android:textColor="#ff000000"
+                android:id="@+id/textView"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="#ffc7c7c7" />
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:id="@+id/gymFilterSpinner"
+                android:layout_weight="1"
+                android:background="#ffc7c7c7" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Sort Order:"
+                android:id="@+id/textView3" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:id="@+id/sortOrderTextView" />
+        </LinearLayout>
 
     </LinearLayout>
 
