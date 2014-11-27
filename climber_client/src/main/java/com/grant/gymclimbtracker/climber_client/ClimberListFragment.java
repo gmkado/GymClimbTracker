@@ -279,6 +279,7 @@ public class ClimberListFragment extends ListFragment implements
             case R.id.filterLocalSpinner:
                 switch (filtVals[((Spinner) getActivity().findViewById(R.id.filterLocalSpinner)).getSelectedItemPosition()]) {
                     case showAll: // show all
+                        mLocalSelection = "";
                         break;
                     case projects:
                         // show projects

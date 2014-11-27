@@ -159,6 +159,9 @@ public class AddClimbFragment extends Fragment
         Spinner spinner = (Spinner) v.findViewById(R.id.typeSpinner);
         spinner.setAdapter(new ArrayAdapter<ClimbContract.climbType>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.climbType.values()));
         spinner.setOnItemSelectedListener(this);
+        spinner.setSelection(settings.getInt("type",0), true);
+
+        // find these views and set to field variables
         gradeSpinner = (Spinner) v.findViewById(R.id.gradeSpinner);
         areaSpinner = (Spinner) v.findViewById(R.id.areaSpinner);
 
@@ -194,19 +197,38 @@ public class AddClimbFragment extends Fragment
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
         switch(adapterView.getId()){
             case R.id.typeSpinner:
+                // get sharedpref editor to save rope/grade settings
+                SharedPreferences.Editor editor = settings.edit();
+
                 // change fields according to climb type
                 if(position == ClimbContract.climbType.toprope.ordinal() || position == ClimbContract.climbType.lead.ordinal()) {
+                    // save current area/grade
+                    editor.putInt("boulderArea", areaSpinner.getSelectedItemPosition());
+                    editor.putInt("boulderGrade", gradeSpinner.getSelectedItemPosition());
+
+                    // set items in spinner
                     gradeSpinner.setAdapter(new ArrayAdapter<ClimbContract.ropeGrade>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.ropeGrade.values()));
-                    areaSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(),R.array.ropeAreas , android.R.layout.simple_spinner_item));
+                    areaSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(), R.array.ropeAreas, android.R.layout.simple_spinner_item));
+
+                    // restore previous roped grade/area
+                    gradeSpinner.setSelection(settings.getInt("ropeGrade", 0));
+                    areaSpinner.setSelection(settings.getInt("ropeArea",0));
                 }else if (position == ClimbContract.climbType.boulder.ordinal()) {
+                    // save current area/grade
+                    editor.putInt("ropeArea", areaSpinner.getSelectedItemPosition());
+                    editor.putInt("ropeGrade", gradeSpinner.getSelectedItemPosition());
+
+                    // set items in spinner
                     gradeSpinner.setAdapter(new ArrayAdapter<ClimbContract.boulderGrade>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.boulderGrade.values()));
                     areaSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(), R.array.boulderAreas, android.R.layout.simple_spinner_item));
 
+                    // restore previous boulder grade/area
+                    gradeSpinner.setSelection(settings.getInt("boulderGrade", 0));
+                    areaSpinner.setSelection(settings.getInt("boulderArea",0));
                 }
+                editor.putInt("type", position);
+                editor.commit();
 
-                // set area spinner to sharedpref settings
-                gradeSpinner.setSelection(settings.getInt("grade",0 ));
-                areaSpinner.setSelection(settings.getInt("area", 0));
 
                 break;
             case R.id.primaryColorSpinner:
@@ -219,123 +241,121 @@ public class AddClimbFragment extends Fragment
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
+         public void onNothingSelected(AdapterView<?> adapterView) {
 
-    }
+         }
 
-
-
-    @Override
-    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        month = month+1;  // index starts at 0
-        mCalendar.set(Calendar.YEAR, year);
-        mCalendar.set(Calendar.MONTH, month);
-        mCalendar.set(Calendar.DATE, day);
-        setDate = mDateFormat.format(mCalendar.getTime());
-        ((Button)getActivity().findViewById(R.id.dateSelectButton)).setText(setDate);
-    }
-
-    @Override
-    public void onClick(View view) {
-        DialogFragment fragment;
-        switch(view.getId()){
-            case R.id.dateSelectButton:
-                fragment = DatePickerFragment.newInstance(this);
-                fragment.show(getActivity().getSupportFragmentManager(), "datePicker");
-                break;
-            case R.id.showMapButton:
-                fragment  = ShowMapFragment.newInstance();
-                fragment.show(getActivity().getSupportFragmentManager(), "showMap");
-                break;
-            case R.id.colorPickerButton:
-                fragment = ColorPickerFragment.newInstance();
-                fragment.setTargetFragment(this, COLOR_PICKER_FRAGMENT);
-                fragment.show(getActivity().getSupportFragmentManager(), "colorPicker");
-                break;
-            case R.id.colorRemoverButton:
-                fragment = ColorRemoverFragment.newInstance(colorList);
-                fragment.setTargetFragment(this, COLOR_REMOVER_FRAGMENT);
-                fragment.show(getActivity().getSupportFragmentManager(), "colorRemover");
-                break;
-            case R.id.addClimbButton:
-                ContentValues c = new ContentValues();
-                Activity activity = getActivity();
-                c.put(ClimbContract.Climbs.GYM, getString(R.string.gym_name));
-                c.put(ClimbContract.Climbs.AREA, ((Spinner)activity.findViewById(R.id.areaSpinner)).getSelectedItem().toString());
-                c.put(ClimbContract.Climbs.TYPE, ((Spinner)activity.findViewById(R.id.typeSpinner)).getSelectedItemPosition());
-                c.put(ClimbContract.Climbs.GRADE, ((Spinner)activity.findViewById(R.id.gradeSpinner)).getSelectedItemPosition());
-                c.put(ClimbContract.Climbs.DATE_SET, setDate);
-                c.put(ClimbContract.Climbs.COLOR_PRIMARY, colorList.get(((Spinner) activity.findViewById(R.id.primaryColorSpinner)).getSelectedItemPosition()));
-                c.put(ClimbContract.Climbs.COLOR_SECONDARY, colorList.get(((Spinner) activity.findViewById(R.id.secondaryColorSpinner)).getSelectedItemPosition()));
-
-                resolver.insert(ClimbContract.Climbs.CONTENT_URI, c);
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unexpected onClick view");
-
-        }
-    }
 
 
     @Override
-    public void handleDialogResult(int requestCode, int resultCode, Bundle bundle) {
-        switch (requestCode){
-            case COLOR_PICKER_FRAGMENT:
-                if(resultCode == Activity.RESULT_OK) {
-                    // add to arraylist
-                    int color = bundle.getInt("color");
-                    if (!colorList.contains(color))
-                    {
-                        colorList.add(color);
-                        colorAdapter.notifyDataSetChanged();
-                    } else{
-                        Log.w(TAG, "Color already entered");
-                    }
-                }
-                break;
-            case COLOR_REMOVER_FRAGMENT:
-                if(resultCode == Activity.RESULT_OK) {
-                    // remove from arraylist
-                    colorList.remove(bundle.getInt("colorIndex"));
-                    if(colorList.isEmpty()){
-                        // make sure we at least have one color
-                        colorList.add(Color.WHITE);
-                    }
-                    colorAdapter.notifyDataSetChanged();
-                }
-        }
-
-    }
+         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+             month = month+1;  // index starts at 0
+             mCalendar.set(Calendar.YEAR, year);
+             mCalendar.set(Calendar.MONTH, month);
+             mCalendar.set(Calendar.DATE, day);
+             setDate = mDateFormat.format(mCalendar.getTime());
+             ((Button)getActivity().findViewById(R.id.dateSelectButton)).setText(setDate);
+         }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        Log.i(TAG, "onPause");
-        // save all form data
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("setDate", setDate);
-        editor.putInt("area", ((Spinner) getActivity().findViewById(R.id.areaSpinner)).getSelectedItemPosition());
-        editor.putInt("grade", ((Spinner)getActivity().findViewById(R.id.gradeSpinner)).getSelectedItemPosition());
-        editor.commit();
+         public void onClick(View view) {
+             DialogFragment fragment;
+             switch(view.getId()){
+                 case R.id.dateSelectButton:
+                     fragment = DatePickerFragment.newInstance(this);
+                     fragment.show(getActivity().getSupportFragmentManager(), "datePicker");
+                     break;
+                 case R.id.showMapButton:
+                     fragment  = ShowMapFragment.newInstance();
+                     fragment.show(getActivity().getSupportFragmentManager(), "showMap");
+                     break;
+                 case R.id.colorPickerButton:
+                     fragment = ColorPickerFragment.newInstance();
+                     fragment.setTargetFragment(this, COLOR_PICKER_FRAGMENT);
+                     fragment.show(getActivity().getSupportFragmentManager(), "colorPicker");
+                     break;
+                 case R.id.colorRemoverButton:
+                     fragment = ColorRemoverFragment.newInstance(colorList);
+                     fragment.setTargetFragment(this, COLOR_REMOVER_FRAGMENT);
+                     fragment.show(getActivity().getSupportFragmentManager(), "colorRemover");
+                     break;
+                 case R.id.addClimbButton:
+                     ContentValues c = new ContentValues();
+                     Activity activity = getActivity();
+                     c.put(ClimbContract.Climbs.GYM, getString(R.string.gym_name));
+                     c.put(ClimbContract.Climbs.AREA, ((Spinner)activity.findViewById(R.id.areaSpinner)).getSelectedItem().toString());
+                     c.put(ClimbContract.Climbs.TYPE, ((Spinner)activity.findViewById(R.id.typeSpinner)).getSelectedItemPosition());
+                     c.put(ClimbContract.Climbs.GRADE, ((Spinner)activity.findViewById(R.id.gradeSpinner)).getSelectedItemPosition());
+                     c.put(ClimbContract.Climbs.DATE_SET, setDate);
+                     c.put(ClimbContract.Climbs.COLOR_PRIMARY, colorList.get(((Spinner) activity.findViewById(R.id.primaryColorSpinner)).getSelectedItemPosition()));
+                     c.put(ClimbContract.Climbs.COLOR_SECONDARY, colorList.get(((Spinner) activity.findViewById(R.id.secondaryColorSpinner)).getSelectedItemPosition()));
 
-        // update color database
-        mDbSource.replaceColors(colorList);
-    }
+                     resolver.insert(ClimbContract.Climbs.CONTENT_URI, c);
+                     break;
+
+                 default:
+                     throw new IllegalArgumentException("Unexpected onClick view");
+
+             }
+         }
+
+
+    @Override
+         public void handleDialogResult(int requestCode, int resultCode, Bundle bundle) {
+             switch (requestCode){
+                 case COLOR_PICKER_FRAGMENT:
+                     if(resultCode == Activity.RESULT_OK) {
+                         // add to arraylist
+                         int color = bundle.getInt("color");
+                         if (!colorList.contains(color))
+                         {
+                             colorList.add(color);
+                             colorAdapter.notifyDataSetChanged();
+                         } else{
+                             Log.w(TAG, "Color already entered");
+                         }
+                     }
+                     break;
+                 case COLOR_REMOVER_FRAGMENT:
+                     if(resultCode == Activity.RESULT_OK) {
+                         // remove from arraylist
+                         colorList.remove(bundle.getInt("colorIndex"));
+                         if(colorList.isEmpty()){
+                             // make sure we at least have one color
+                             colorList.add(Color.WHITE);
+                         }
+                         colorAdapter.notifyDataSetChanged();
+                     }
+             }
+
+         }
+
+    @Override
+         public void onPause() {
+             super.onPause();
+             Log.i(TAG, "onPause");
+             // save all form data
+             SharedPreferences.Editor editor = settings.edit();
+             editor.putString("setDate", setDate);
+             editor.commit();
+
+             // update color database
+             mDbSource.replaceColors(colorList);
+         }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnAddClimbFragmentInteractionListener {
-        public GymLocalDbSource getDbSource();
-    }
+          * This interface must be implemented by activities that contain this
+          * fragment to allow an interaction in this fragment to be communicated
+          * to the activity and potentially other fragments contained in that
+          * activity.
+          * <p>
+          * See the Android Training lesson <a href=
+          * "http://developer.android.com/training/basics/fragments/communicating.html"
+          * >Communicating with Other Fragments</a> for more information.
+          */
+         public interface OnAddClimbFragmentInteractionListener {
+             public GymLocalDbSource getDbSource();
+         }
 
 
 }
