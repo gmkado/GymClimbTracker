@@ -13,18 +13,25 @@ tools:context="com.grant.gymclimbtracker.gym_client.GymListFragment">
         <TextView
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Filter"
-            android:id="@+id/textView4"
-            android:gravity="center_vertical|center_horizontal"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Gym: PGSV"
+            android:id="@+id/textView5"
             android:layout_weight="1" />
 
-        <Spinner
+        <ImageButton
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:id="@+id/filterLocalSpinner"
-            android:layout_weight="5" />
+            android:id="@+id/sortFiltButton"
+            android:src="@drawable/ic_action_31063"
+            android:layout_weight="1" />
 
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:text="Show Map"
+            android:id="@+id/showMapButton"
+            android:layout_weight="1"
+            android:src="@drawable/ic_action_map_8" />
     </LinearLayout>
 
     <LinearLayout
@@ -33,26 +40,20 @@ tools:context="com.grant.gymclimbtracker.gym_client.GymListFragment">
         android:layout_height="wrap_content">
 
         <TextView
-            android:layout_width="0px"
+            android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Gym"
-            android:id="@+id/textView5"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Filter Results By:"
+            android:id="@+id/textView4"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_weight="1" />
+
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:id="@+id/filterLocalSpinner"
             android:layout_weight="2" />
 
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/sortFiltButton"
-            android:src="@drawable/ic_action_31063"
-            android:layout_weight="1" />
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Show Map"
-            android:id="@+id/showMapButton"
-            android:layout_weight="1" />
     </LinearLayout>
 
     <TextView

@@ -5,164 +5,191 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/addClimbTable">
 
-    <TableLayout
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-    >
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:background="@android:drawable/dialog_holo_light_frame">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Type of Climb"
-                android:id="@+id/typeTextView"
-                android:layout_column="0"
-                android:layout_weight="1" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Type of Climb"
+            android:id="@+id/typeTextView"
+            android:layout_column="0"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center_horizontal|bottom" />
 
-            <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/typeSpinner"
-                android:layout_column="1"
-                android:spinnerMode="dialog"
-                android:layout_weight="2" />
-        </TableRow>
+        <Spinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/typeSpinner"
+            android:layout_column="1"
+            android:spinnerMode="dialog"
+            android:layout_weight="2" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame">
 
-
-        <TableRow
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Area"
+                android:id="@+id/textView4"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal|bottom" />
+
+            <Spinner
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/areaSpinner"
+                android:layout_column="1"
+                android:spinnerMode="dialog"
+                android:layout_weight="3"/>
+
+            <ImageButton
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Area (Click for map)"
                 android:gravity="left|center_vertical"
                 android:id="@+id/showMapButton"
                 android:layout_column="0"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:src="@drawable/ic_action_map_8" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Grade"
+                android:id="@+id/gradeTextView"
+                android:layout_weight="1"
+                android:layout_column="0"
+                android:gravity="center_vertical|center_horizontal|bottom" />
 
             <Spinner
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/areaSpinner"
-                android:layout_column="1"
-                android:spinnerMode="dialog"
-                android:layout_weight="2"/>
-        </TableRow>
-
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Grade"
-            android:id="@+id/gradeTextView"
-            android:layout_weight="1"
-            android:layout_column="0" />
-
-        <Spinner
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/gradeSpinner"
             android:layout_column="1"
             android:spinnerMode="dialog"
             android:layout_weight="2"/>
-    </TableRow>
+        </LinearLayout>
 
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Date Set"
-            android:id="@+id/dateTextView"
-            android:layout_column="0"
-            android:layout_weight="1"/>
-        <Button
-            android:layout_width="match_parent"
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Date Set"
+                android:id="@+id/dateTextView"
+                android:layout_column="0"
+                android:layout_weight="1"
+                android:gravity="center_vertical|center_horizontal|bottom" />
+
+            <Button
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Select"
             android:id="@+id/dateSelectButton"
             android:layout_column="1"
             android:layout_weight="2"/>
+        </LinearLayout>
+    </LinearLayout>
 
-    </TableRow>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/dialog_holo_light_frame">
 
-        <TableRow
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Primary Color"
                 android:layout_weight="1"
-                android:id="@+id/textView" />
+                android:id="@+id/textView"
+                android:gravity="center_vertical|center_horizontal|bottom" />
 
             <Spinner
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/primaryColorSpinner"
                 android:layout_weight="2"
                 android:spinnerMode="dialog" />
+        </LinearLayout>
 
-        </TableRow>
-
-        <TableRow
+        <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="wrap_content" >
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Secondary Color"
                 android:layout_weight="1"
-                android:id="@+id/textView1" />
+                android:id="@+id/textView1"
+                android:gravity="center_vertical|center_horizontal|bottom" />
 
             <Spinner
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/secondaryColorSpinner"
                 android:layout_weight="2"
                 android:spinnerMode="dialog" />
+        </LinearLayout>
 
-        </TableRow>
-    </TableLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
 
+            <Button
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Add Color"
+                android:id="@+id/colorPickerButton"/>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:layout_width="0px"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Add Color"
-            android:id="@+id/colorPickerButton"/>
-
-        <Button
-            android:layout_width="0px"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Remove Color"
-            android:id="@+id/colorRemoverButton" />
+            <Button
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Remove Color"
+                android:id="@+id/colorRemoverButton" />
+        </LinearLayout>
     </LinearLayout>
+
 
     <Button
         android:layout_width="fill_parent"

@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 
@@ -143,8 +144,8 @@ public class AddClimbFragment extends Fragment
         button = (Button)v.findViewById(R.id.addClimbButton);
         button.setOnClickListener(this);
 
-        button = (Button)v.findViewById(R.id.showMapButton);
-        button.setOnClickListener(this);
+        ImageButton imgButton = (ImageButton)v.findViewById(R.id.showMapButton);
+        imgButton.setOnClickListener(this);
 
         button = (Button)v.findViewById(R.id.colorPickerButton);
         button.setOnClickListener(this);

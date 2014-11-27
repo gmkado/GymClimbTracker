@@ -191,10 +191,9 @@ public class ClimberListFragment extends ListFragment implements
         spinner.setAdapter(new ArrayAdapter<filterBy>(getActivity(),android.R.layout.simple_spinner_dropdown_item,filterBy.values()));
         spinner.setOnItemSelectedListener(this);
 
-        ImageButton button = (ImageButton)v.findViewById(R.id.sortFiltButton);
-        button.setOnClickListener(this);
+        v.findViewById(R.id.sortFiltButton).setOnClickListener(this);
 
-        (v.findViewById(R.id.showMapButton)).setOnClickListener(this);
+        v.findViewById(R.id.showMapButton).setOnClickListener(this);
         return v;
     }
 

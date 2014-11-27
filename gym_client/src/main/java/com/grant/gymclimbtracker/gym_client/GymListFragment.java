@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -20,14 +21,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 
 import com.grant.gymclimbtracker.climb_contract.ClimbContract;
+import com.grant.gymclimbtracker.climb_contract.DialogFragmentHandler;
+import com.grant.gymclimbtracker.climb_contract.SortFilterFragment;
 
 
 public class GymListFragment extends ListFragment implements
-        LoaderManager.LoaderCallbacks<Cursor> {
+        LoaderManager.LoaderCallbacks<Cursor>, View.OnClickListener, DialogFragmentHandler {
     private static final int CLIMB_LIST_ID = 1;
     private static final String TAG = "GymListFragment";
+    private static final int SORT_FILTER_FRAGMENT = 1;
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     //--private static final String ARG_PARAM1 = "param1";
 
@@ -35,6 +40,10 @@ public class GymListFragment extends ListFragment implements
 
     private OnGymListFragmentInteractionListener mListener;
     private ContentResolver resolver;
+    private String mSelection;
+    private String mSortOrder;
+    private String mProviderSelection;
+    private String mLocalSelection;
 
     /**
      * Use this factory method to create a new instance of
@@ -78,7 +87,11 @@ public class GymListFragment extends ListFragment implements
                              Bundle savedInstanceState) {
         Log.i(TAG, "onCreateView");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_gym_list, container, false);
+        View v = inflater.inflate(R.layout.fragment_gym_list, container, false);
+        ImageButton button = (ImageButton)v.findViewById(R.id.sortFilterButton);
+        button.setOnClickListener(this);
+
+        return v;
     }
 
     @Override
@@ -125,9 +138,9 @@ public class GymListFragment extends ListFragment implements
             return new CursorLoader(this.getActivity(),
                     ClimbContract.Climbs.CONTENT_URI,
                     ClimbContract.Climbs.PROJECTION_ALL,
+                    mSelection,
                     null,
-                    null,
-                    ClimbContract.Climbs.SORT_ORDER_DEFAULT);
+                    mSortOrder);
         }
         else{
             return null;
@@ -150,40 +163,82 @@ public class GymListFragment extends ListFragment implements
         ((GymCursorAdapter)this.getListAdapter()).swapCursor(null);
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnGymListFragmentInteractionListener {
-        public void onGymListFragmentInteraction(Uri uri);
+    @Override
+    public void onClick(View v) {
+        if(v.getId() == R.id.sortFilterButton) {
+            // open sort/filter dialog
+            // open sort filter dialog fragment
+            SortFilterFragment fragment = SortFilterFragment.newInstance();
+            fragment.setTargetFragment(this, SORT_FILTER_FRAGMENT);
+            fragment.show(getActivity().getSupportFragmentManager(), "sortFilter");
+        }
     }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-
-        switch (item.getItemId()) {
-            case R.id.delete:
-                // delete the item
-                Uri delUri = ContentUris.withAppendedId(ClimbContract.Climbs.CONTENT_URI, info.id);
-                int delCount = resolver.delete(delUri, null, null);
-                if(delCount == 0){
-                    Log.d(TAG, "No item deleted");
-                }else if (delCount == 1) {
-                    Log.d(TAG, "Item deleted successfully");
-                }else{
-                    Log.d(TAG, "Something went wrong. delCount = " + delCount);
+    public void handleDialogResult(int RequestCode, int ResultCode, Bundle data) {
+        switch (RequestCode){
+            case SORT_FILTER_FRAGMENT:
+                if(ResultCode == Activity.RESULT_OK) {
+                    // use the result string to sort the list
+                    mProviderSelection = data.getString("mSelection");
+                    mSortOrder = data.getString("mSortOrder");
+                    refreshList();
                 }
-                return true;
-            default:
-                return super.onContextItemSelected(item);
+                break;
         }
     }
+
+    private void refreshList() {
+        mSelection = "";
+
+        if(mProviderSelection != null && !mProviderSelection.isEmpty()) {
+                     mSelection = mProviderSelection;
+                 }
+        if(mLocalSelection != null && !mLocalSelection.isEmpty()){
+                     if(!mSelection.isEmpty()) {
+                         mSelection += " AND ";
+                     }
+                     mSelection += mLocalSelection;
+                 }
+
+        
+        getLoaderManager().restartLoader(CLIMB_LIST_ID,null,this);
+    }
+
+    /**
+          * This interface must be implemented by activities that contain this
+          * fragment to allow an interaction in this fragment to be communicated
+          * to the activity and potentially other fragments contained in that
+          * activity.
+          * <p>
+          * See the Android Training lesson <a href=
+          * "http://developer.android.com/training/basics/fragments/communicating.html"
+          * >Communicating with Other Fragments</a> for more information.
+          */
+         public interface OnGymListFragmentInteractionListener {
+             public void onGymListFragmentInteraction(Uri uri);
+         }
+
+    @Override
+         public boolean onContextItemSelected(MenuItem item) {
+             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+             switch (item.getItemId()) {
+                 case R.id.delete:
+                     // delete the item
+                     Uri delUri = ContentUris.withAppendedId(ClimbContract.Climbs.CONTENT_URI, info.id);
+                     int delCount = resolver.delete(delUri, null, null);
+                     if(delCount == 0){
+                         Log.d(TAG, "No item deleted");
+                     }else if (delCount == 1) {
+                         Log.d(TAG, "Item deleted successfully");
+                     }else{
+                         Log.d(TAG, "Something went wrong. delCount = " + delCount);
+                     }
+                     return true;
+                 default:
+                     return super.onContextItemSelected(item);
+             }
+         }
 
 }
