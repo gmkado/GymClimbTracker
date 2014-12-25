@@ -36,7 +36,8 @@ import android.app.Activity;
      // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
      private DialogFragmentHandler mListener;
-     private Spinner gradeFilterSpinner;
+     private Spinner minGradeFilterSpinner;
+     private Spinner maxGradeFilterSpinner;
      private Spinner areaFilterSpinner;
      private Spinner typeFilterSpinner;
      final modeType[] modeVals = modeType.values();
@@ -89,32 +90,43 @@ import android.app.Activity;
 
              // change fields according to climb type
              if (position == ClimbContract.climbType.toprope.ordinal() || position == ClimbContract.climbType.lead.ordinal()) {
-                 // save current area/grade if not the first time
-                 if (gradeFilterSpinner.getAdapter() != null) {
+                 // save current area/grade if not the first time (i.e. after dialog box is first created)
+                 if (minGradeFilterSpinner.getAdapter() != null) {
                      editor.putInt("boulderArea", areaFilterSpinner.getSelectedItemPosition());
-                     editor.putInt("boulderGrade", gradeFilterSpinner.getSelectedItemPosition());
+                     editor.putInt("minBoulderGrade", minGradeFilterSpinner.getSelectedItemPosition());
+                     editor.putInt("maxBoulderGrade", maxGradeFilterSpinner.getSelectedItemPosition());
                  }
                  // set items in spinner
-                 gradeFilterSpinner.setAdapter(new ArrayAdapter<ClimbContract.ropeGrade>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.ropeGrade.values()));
+                 ArrayAdapter<ClimbContract.ropeGrade> adapter = new ArrayAdapter<ClimbContract.ropeGrade>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.ropeGrade.values());
+                 minGradeFilterSpinner.setAdapter(adapter);
+                 maxGradeFilterSpinner.setAdapter(adapter);
                  areaFilterSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(), R.array.ropeAreas, android.R.layout.simple_spinner_item));
 
                  // restore previous roped grade/area
-                 gradeFilterSpinner.setSelection(settings.getInt("ropeGrade", 0));
+                 minGradeFilterSpinner.setSelection(settings.getInt("minRopeGrade", 0));
+                 maxGradeFilterSpinner.setSelection(settings.getInt("maxRopeGrade", 0));
                  areaFilterSpinner.setSelection(settings.getInt("ropeArea", 0));
              } else if (position == ClimbContract.climbType.boulder.ordinal()) {
                  // save current area/grade
-                 if (gradeFilterSpinner.getAdapter() != null) {
+                 if (minGradeFilterSpinner.getAdapter() != null) {
                      editor.putInt("ropeArea", areaFilterSpinner.getSelectedItemPosition());
-                     editor.putInt("ropeGrade", gradeFilterSpinner.getSelectedItemPosition());
+                     editor.putInt("minRopeGrade", minGradeFilterSpinner.getSelectedItemPosition());
+                     editor.putInt("maxRopeGrade", maxGradeFilterSpinner.getSelectedItemPosition());
                  }
                  // set items in spinner
-                 gradeFilterSpinner.setAdapter(new ArrayAdapter<ClimbContract.boulderGrade>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.boulderGrade.values()));
+
+                 ArrayAdapter<ClimbContract.boulderGrade> adapter = new ArrayAdapter<ClimbContract.boulderGrade>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.boulderGrade.values());
+                 minGradeFilterSpinner.setAdapter(adapter);
+                 maxGradeFilterSpinner.setAdapter(adapter);
                  areaFilterSpinner.setAdapter(ArrayAdapter.createFromResource(getActivity(), R.array.boulderAreas, android.R.layout.simple_spinner_item));
 
                  // restore previous boulder grade/area
-                 gradeFilterSpinner.setSelection(settings.getInt("boulderGrade", 0));
+                 minGradeFilterSpinner.setSelection(settings.getInt("minBoulderGrade", 0));
+                 maxGradeFilterSpinner.setSelection(settings.getInt("maxBoulderGrade", 0));
                  areaFilterSpinner.setSelection(settings.getInt("boulderArea", 0));
              }
+
+             // save the new typefilter position
              editor.putInt("typeFilter", position);
          }
 
@@ -158,18 +170,18 @@ import android.app.Activity;
              switch (modeVals[position]) {
                  case none: // Don't use filter/sort
                      getView().findViewById(R.id.gradeOrderToggleButton).setVisibility(View.GONE);
-                     getView().findViewById(R.id.gradeFilterSpinner).setVisibility(View.GONE);
+                     getView().findViewById(R.id.gradeFilterLinearLayout).setVisibility(View.GONE);
                      break;
                  case sort: // Sort
                      // add it to sort order
                      sortOrderList.add(ClimbContract.Climbs.GRADE);
-
                      getView().findViewById(R.id.gradeOrderToggleButton).setVisibility(View.VISIBLE);
-                     getView().findViewById(R.id.gradeFilterSpinner).setVisibility(View.GONE);
+                     getView().findViewById(R.id.gradeFilterLinearLayout).setVisibility(View.GONE);
                      break;
                  case filter: // Filter
-                     getView().findViewById(R.id.gradeOrderToggleButton).setVisibility(View.GONE);
-                     getView().findViewById(R.id.gradeFilterSpinner).setVisibility(View.VISIBLE);
+                     sortOrderList.add(ClimbContract.Climbs.GRADE);
+                     getView().findViewById(R.id.gradeOrderToggleButton).setVisibility(View.VISIBLE); // sort the filtered grades as well
+                     getView().findViewById(R.id.gradeFilterLinearLayout).setVisibility(View.VISIBLE);
                      break;
              }
              // date always comes last
@@ -181,6 +193,16 @@ import android.app.Activity;
              ((TextView) (getView().findViewById(R.id.sortOrderTextView))).setText(getSortOrderString());
          }
 
+         // if the min or max grade was set, modify max or min grade accordingly
+         else if (viewId == R.id.minGradeFilterSpinner) {
+             if(maxGradeFilterSpinner.getSelectedItemPosition()<position){
+                 maxGradeFilterSpinner.setSelection(position);
+             }
+         } else if(viewId == R.id.maxGradeFilterSpinner) {
+             if(minGradeFilterSpinner.getSelectedItemPosition()>position){
+                 minGradeFilterSpinner.setSelection(position);
+             }
+         }
 
      }
 
@@ -262,9 +284,11 @@ import android.app.Activity;
          typeFilterSpinner.setAdapter(new ArrayAdapter<ClimbContract.climbType>(getActivity(), android.R.layout.simple_spinner_item, ClimbContract.climbType.values()));
          typeFilterSpinner.setOnItemSelectedListener(this);
 
-         gradeFilterSpinner = (Spinner) v.findViewById(R.id.gradeFilterSpinner);
+         minGradeFilterSpinner = (Spinner) v.findViewById(R.id.minGradeFilterSpinner);
+         maxGradeFilterSpinner = (Spinner) v.findViewById(R.id.maxGradeFilterSpinner);
          areaFilterSpinner = (Spinner) v.findViewById(R.id.areaFilterSpinner);
-
+        minGradeFilterSpinner.setOnItemSelectedListener(this);
+         maxGradeFilterSpinner.setOnItemSelectedListener(this);
          /**
           * set current pref
           * grade and area presets will be set when onItemSelected is called
@@ -315,11 +339,13 @@ import android.app.Activity;
          int typePos = typeFilterSpinner.getSelectedItemPosition();
          if (typePos == ClimbContract.climbType.toprope.ordinal() || typePos == ClimbContract.climbType.lead.ordinal()) {
              editor.putInt("ropeArea", areaFilterSpinner.getSelectedItemPosition());
-             editor.putInt("ropeGrade", gradeFilterSpinner.getSelectedItemPosition());
+             editor.putInt("minRopeGrade", minGradeFilterSpinner.getSelectedItemPosition());
+             editor.putInt("maxRopeGrade", maxGradeFilterSpinner.getSelectedItemPosition());
 
          } else if (typePos == ClimbContract.climbType.boulder.ordinal()) {
              editor.putInt("boulderArea", areaFilterSpinner.getSelectedItemPosition());
-             editor.putInt("boulderGrade", gradeFilterSpinner.getSelectedItemPosition());
+             editor.putInt("minBoulderGrade", minGradeFilterSpinner.getSelectedItemPosition());
+             editor.putInt("maxBoulderGrade", maxGradeFilterSpinner.getSelectedItemPosition());
 
          }
          editor.putBoolean("areaOrder", ((ToggleButton) getView().findViewById(R.id.areaOrderToggleButton)).isChecked());
@@ -367,7 +393,9 @@ import android.app.Activity;
                  }
                  if (modeVals[((Spinner) getView().findViewById(R.id.gradeModeSpinner)).
                          getSelectedItemPosition()] == modeType.filter) {
-                     mSelection += " AND " + ClimbContract.Climbs.GRADE + " = " + gradeFilterSpinner.getSelectedItemPosition();
+                     mSelection += " AND " + ClimbContract.Climbs.GRADE + " >= " + minGradeFilterSpinner.getSelectedItemPosition();
+                     mSelection += " AND " + ClimbContract.Climbs.GRADE + " <= " + maxGradeFilterSpinner.getSelectedItemPosition();
+
                  }
 
                  /**
@@ -387,17 +415,9 @@ import android.app.Activity;
                          mSortOrder += " DESC";
                      }
                  }
-                 // always use date as last sort item
-                 if (!mSortOrder.isEmpty()) {
-                     mSortOrder += ", ";
-                 }
-                 mSortOrder += ClimbContract.Climbs.DATE_SET;
-                 if (((ToggleButton) getView().findViewById(R.id.dateOrderToggleButton)).isChecked()) {
-                     mSortOrder += " ASC";
-                 } else {
-                     mSortOrder += " DESC";
-                 }
 
+                 Log.i(TAG, "mSelection = " + mSelection);
+                 Log.i(TAG, "mSortOrder = " + mSortOrder);
                  b.putString("mSelection", mSelection);
                  b.putString("mSortOrder", mSortOrder);
                  mListener.handleDialogResult(getTargetRequestCode(), Activity.RESULT_OK, b);

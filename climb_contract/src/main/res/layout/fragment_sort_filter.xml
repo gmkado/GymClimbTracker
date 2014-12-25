@@ -193,18 +193,42 @@
             <ToggleButton
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:textOn="Increasing"
-                android:textOff="Decreasing"
+                android:textOn="INC"
+                android:textOff="DEC"
                 android:text="New ToggleButton"
                 android:id="@+id/gradeOrderToggleButton"
                 android:checked="true"
                 android:layout_weight="1" />
 
-            <Spinner
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:id="@+id/gradeFilterSpinner"
-                android:layout_weight="1" />
+                android:id ="@+id/gradeFilterLinearLayout"
+                android:layout_weight="4">
+
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/minGradeFilterSpinner"
+                    android:layout_weight="2" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="TO"
+                    android:id="@+id/textView4"
+                    android:layout_weight="1"
+                    android:textColor="#ff000000"
+                    android:gravity="center" />
+
+                <Spinner
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:id="@+id/maxGradeFilterSpinner"
+                    android:layout_weight="2" />
+            </LinearLayout>
 
         </LinearLayout>
 

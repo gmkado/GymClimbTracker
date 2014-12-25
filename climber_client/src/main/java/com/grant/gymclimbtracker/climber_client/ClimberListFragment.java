@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -273,33 +272,38 @@ public class ClimberListFragment extends ListFragment implements
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        final filterBy[] filtVals = filterBy.values();
         switch (parent.getId()) {
             case R.id.filterLocalSpinner:
-                switch (filtVals[((Spinner) getActivity().findViewById(R.id.filterLocalSpinner)).getSelectedItemPosition()]) {
-                    case showAll: // show all
-                        mLocalSelection = "";
-                        break;
-                    case projects:
-                        // show projects
-                        // get the project ids
-                        mLocalSelection = ClimbContract.Climbs._ID + " IN " + mDbSource.getProjectIds();
-                        break;
-                    case unsent:
-                        // show only unsent
-                        mLocalSelection = ClimbContract.Climbs._ID + " NOT IN " + mDbSource.getSentIds();
-                        break;
-                    case sent:
-                        // show only sent
-                        mLocalSelection = ClimbContract.Climbs._ID + " IN " + mDbSource.getSentIds();
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unrecognized filter selection");
-                }
+                updateLocalSelection();
                 refreshList();
                 break;
         }
     }
+
+    private void updateLocalSelection() {
+             final filterBy[] filtVals = filterBy.values();
+
+             switch (filtVals[((Spinner) getActivity().findViewById(R.id.filterLocalSpinner)).getSelectedItemPosition()]) {
+                 case showAll: // show all
+                     mLocalSelection = "";
+                     break;
+                 case projects:
+                     // show projects
+                     // get the project ids
+                     mLocalSelection = ClimbContract.Climbs._ID + " IN " + mDbSource.getProjectIds();
+                     break;
+                 case unsent:
+                     // show only unsent
+                     mLocalSelection = ClimbContract.Climbs._ID + " NOT IN " + mDbSource.getSentIds();
+                     break;
+                 case sent:
+                     // show only sent
+                     mLocalSelection = ClimbContract.Climbs._ID + " IN " + mDbSource.getSentIds();
+                     break;
+                 default:
+                     throw new IllegalArgumentException("Unrecognized filter selection");
+             }
+         }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
@@ -335,6 +339,7 @@ public class ClimberListFragment extends ListFragment implements
             default:
                 return super.onContextItemSelected(item);
         }
+        updateLocalSelection();
         refreshList();
         return true;
     }
@@ -351,8 +356,7 @@ public class ClimberListFragment extends ListFragment implements
             }
             mSelection += mLocalSelection;
         }
-
-
+        Log.i(TAG, "refreshList -- restarting loader with mSelection" + mSelection);
         getLoaderManager().restartLoader(CLIMB_LIST_ID,null,this);
     }
 

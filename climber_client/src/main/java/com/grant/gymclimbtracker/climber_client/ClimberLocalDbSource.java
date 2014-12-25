@@ -7,6 +7,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +19,10 @@ public class ClimberLocalDbSource {
     private static final String TAG = "LocalDbSource";
     private SQLiteDatabase database;
     private LocalDbHelper helper;
+    private Context mContext;
 
     public ClimberLocalDbSource(Context context) {
+        mContext = context;
         helper = new LocalDbHelper(context);
     }
 
@@ -100,6 +103,14 @@ public class ClimberLocalDbSource {
 
             ContentValues values = new ContentValues();
             values.put(ClimberLocalDbSchema.COLUMN_SENT, addSent);
+
+            // if the climb was sent, remove from project list
+            if(addSent == true) {
+                values.put(ClimberLocalDbSchema.COLUMN_PROJECT, false);
+                // congratulate climber
+                Toast toast = Toast.makeText(mContext,"Nice Job!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
             database.update(ClimberLocalDbSchema.TABLE_MYCLIMBS, values,
                     ClimberLocalDbSchema.COLUMN_ID + "=" + _id, null);
             values.put(ClimberLocalDbSchema.COLUMN_SENT, addSent);

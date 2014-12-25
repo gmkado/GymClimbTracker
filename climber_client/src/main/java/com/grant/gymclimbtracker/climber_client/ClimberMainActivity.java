@@ -12,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+import com.parse.Parse;
+import com.parse.ParseObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +35,15 @@ public class ClimberMainActivity extends FragmentActivity implements ClimberList
 
         ViewPager pager = (ViewPager)findViewById(R.id.viewpager);
         pager.setAdapter(pageAdapter);
+
+        // initialize Parse
+        Parse.initialize(this, "V5kBuzDdaozQHFn16IoFqPZ60xYeG6MNx4RIiG58", "2z71inisqSUuVSZqqGFs5iCEXbFrSHctlWlfSQzM");
+
+        // TODO: remove this
+        // test parse
+        ParseObject testObject = new ParseObject("TestObject");
+        testObject.put("foo", "bar");
+        testObject.saveInBackground();
 
         // create dbsource for local database
         mDbSource = new ClimberLocalDbSource(this);
